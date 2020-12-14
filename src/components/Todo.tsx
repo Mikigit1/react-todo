@@ -8,6 +8,18 @@ interface ITodo {
     title:string,
     isdone:false;
 }
+interface IItem{
+    id:number;
+    name:string;
+    isDone:boolean;
+}
+
+// HTML側から受け取った値を格納
+type OnChange = (e:React.ChangeEvent<HTMLInputElement>) => void;
+type OnSubmit = (e:React.FormEvent<HTMLFormElement>) => void;
+
+
+
 
 //デザイン
 const useStyles = makeStyles({
