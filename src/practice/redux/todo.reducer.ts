@@ -1,3 +1,4 @@
+import { listenerCount } from 'process';
 import { combineReducers } from 'redux'
 import {createSelector} from 'reselect'
 import { TypeOf } from 'yup';
@@ -24,7 +25,7 @@ export type IAction = ReturnType<typeof addTodo> | ReturnType<typeof doneTodo> |
 interface IItem {
     id:number;
     name:string;
-    isDone:false;
+    isDone:boolean;
 } 
 const filterValue ={
     ALL:'all',
@@ -60,6 +61,7 @@ const initialState:ITodoState ={
     filter:filterValue.ALL
 };
 
+// 受け取ったactionのcaseに合わせて、行う行動を分岐させる。返す型はITodoState
 export const todo = (state = initialState,action:IAction):ITodoState =>{
     switch(action.type){
         case actionTypes.ADD_TODO:{
@@ -69,8 +71,47 @@ export const todo = (state = initialState,action:IAction):ITodoState =>{
                 currentId:state.currentId+1
             };
         }
-        
+        case actionTypes.DONE_TODO:{
+            return{
+                ...state,
+                list:state.list.map(
+                    (item)=>{
+                        if(item.id === action.payload.id){
+                            item.isDone = !item.isDone;
+                        }
+                    return item;
+                    }
+                )
+            };
+        }
+
+        case actionTypes.DELETE_TODO:{
+            return{
+                ...state,
+                list:state.list.filter((item)=>item.id !== action.payload.id)
+            }
+        }
+
+        case actionTypes.SET_FILTER_ALL:{
+            return{
+                ...state,
+                filter:filterValue.ALL
+            }
+        }
+        case actionTypes.SET_FILTER_OPEN:{
+            return{
+                ...state,
+                filter:filterValue.OPEN
+            }
+        }
+
+        default:
+            return state;
     }
+
+
+    /*Lesson5部分 */
+    
 }
 //
 
